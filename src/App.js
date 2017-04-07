@@ -7,17 +7,17 @@ import { SearchkitManager,SearchkitProvider,
   ViewSwitcherHits, ViewSwitcherToggle, DynamicRangeFilter,
   InputFilter, GroupedSelectedFilters,
   Layout, TopBar, LayoutBody, LayoutResults,
-  ActionBar, ActionBarRow, SideBar } from 'searchkit'
+  ActionBar, ActionBarRow, SideBar, Select } from 'searchkit'
 import './index.css'
 
 const host = "https://search-course-data-mspkldvllazhgahqqsihmvdzka.us-east-1.es.amazonaws.com"
-const indexName = "courses2";
+const indexName = "courses";
 const searchkit = new SearchkitManager(host, {
   searchUrlPath: "/" + indexName + "/_search"
 })
 
 
-const MovieHitsListItem = (props)=> {
+const CourseListItem = (props)=> {
   const {bemBlocks, result} = props
   //let url = "http://www.imdb.com/title/" + result._source.imdbId
   //const source:any = extend({}, result._source, result.highlight)
@@ -36,13 +36,17 @@ class App extends Component {
         <Layout>
           <TopBar>
             <div className="my-logo">PH</div>
-            <SearchBox autofocus={true} searchOnChange={true} prefixQueryOptions={{analyzer:"standard"}} prefixQueryFields={["name"]}/>
+            <SearchBox autofocus={true} searchOnChange={true} prefixQueryOptions={{analyzer:"standard"}} prefixQueryFields={["name^9","description^5","instructor^4","program"]}/>
           </TopBar>
 
         <LayoutBody>
 
           <SideBar>
-            <RefinementListFilter id="program" title="Program" field="program.keyword" size={10}/>
+            <RefinementListFilter id="campus" title="Campus" field="campus.keyword" size={10}  operator="OR"/>
+            <RefinementListFilter id="semester" title="Semester" field="semester.keyword" size={10}  operator="OR"/>
+            <RefinementListFilter listComponent={Select} id="department" title="Department" field="program.keyword" orderKey="_term" operator="OR"/>
+            <InputFilter id="instructors" searchThrottleTime={500} title="Instructors" placeholder="Search instructors" searchOnChange={true} queryFields={["instructor"]} />
+            <RefinementListFilter id="days" title="Days" field="day.keyword" size={10} operator="OR"/>
           </SideBar>
           <LayoutResults>
             <ActionBar>
@@ -51,12 +55,6 @@ class App extends Component {
                 <HitsStats translations={{
                   "hitstats.results_found":"{hitCount} results found"
                 }}/>
-                <ViewSwitcherToggle/>
-                <SortingSelector options={[
-                  {label:"Relevance", field:"_score", order:"desc"},
-                  {label:"Latest Releases", field:"released", order:"desc"},
-                  {label:"Earliest Releases", field:"released", order:"asc"}
-                ]}/>
               </ActionBarRow>
 
               <ActionBarRow>
@@ -66,10 +64,9 @@ class App extends Component {
 
             </ActionBar>
             <ViewSwitcherHits
-                hitsPerPage={5} highlightFields={["name"]}
-                //sourceFilter={["plot", "title", "poster", "imdbId", "imdbRating", "year"]}
+                hitsPerPage={20} highlightFields={["name","description"]}
                 hitComponents={[
-                  {key:"list", title:"List", itemComponent:MovieHitsListItem, defaultOption:true}
+                  {key:"list", title:"List", itemComponent:CourseListItem, defaultOption:true}
                 ]}
                 scrollTo="body"
             />
