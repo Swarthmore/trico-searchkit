@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { extend } from 'lodash'
+import { extend, map } from 'lodash'
 import { SearchkitManager,SearchkitProvider,
   SearchBox, RefinementListFilter, Pagination,
   HierarchicalMenuFilter, HitsStats, SortingSelector, NoHits,
@@ -16,20 +16,45 @@ const searchkit = new SearchkitManager(host, {
   searchUrlPath: "/" + indexName + "/_search"
 })
 
-const CourseListItem = (props)=> {
-  const {bemBlocks, result} = props
-  const source:any = extend({}, result._source, result.highlight)
-  let raw = JSON.stringify(result) + "\n\n----\n" + JSON.stringify(source) + "\n\n----\n" + JSON.stringify(props);
-  return (
-    <div className={bemBlocks.item().mix(bemBlocks.container("item"))} data-qa="hit">
-      <div className="course-campus">{source.campus}</div>
-      <div className="course-semester">{source.semester}</div>
-      <div className="course-id">{source.courseNumber}</div>
-      <div className="course-name" dangerouslySetInnerHTML={{__html: source.name}}></div>
-      <div className="course-instructor" dangerouslySetInnerHTML={{__html: source.instructor}}></div>
-      <div className="course-times">{source.day}{source.time}</div>
-    </div>
-  )
+class CourseListTable extends Component {
+  render(){
+    //const {bemBlocks, result} = props
+    //const source:any = extend({}, result._source, result.highlight)
+    //let raw = JSON.stringify(result) + "\n\n----\n" + JSON.stringify(source) + "\n\n----\n" + JSON.stringify(props);
+    //const hits  = props
+    //var raw = JSON.stringify(this.props);
+    /*return (
+      {raw}
+    )*/
+    //const { props } = this
+    const { hits } = this.props
+    return (
+      <div style={{width: '100%', boxSizing: 'border-box', padding: 8}}>
+         <table className="sk-table sk-table-striped" style={{width: '100%', boxSizing: 'border-box'}}>
+           <thead>
+             <tr>
+               <th></th>
+               <th>Title</th>
+               <th>Year</th>
+               <th>Rating</th>
+             </tr>
+           </thead>
+           <tbody>
+             {map(hits, hit => (
+               <tr key={hit._id}>
+                 <td>{hit._source.campus}</td>
+                 <td>{hit._source.semester}</td>
+                 <td>{hit._source.courseNumber}</td>
+                 <td dangerouslySetInnerHTML={{__html: hit._source.name}}></td>
+                 <td dangerouslySetInnerHTML={{__html: hit._source.instructor}}></td>
+                 <td>{hit._source.day}{hit._source.time}</td>
+               </tr>
+             ))}
+           </tbody>
+         </table>
+       </div>
+    )
+  }
 }
 
 class App extends Component {
@@ -65,7 +90,7 @@ class App extends Component {
               </ActionBarRow>
 
             </ActionBar>
-            <Hits hitsPerPage={20} highlightFields={["name","description","instructor"]} itemComponent={CourseListItem} scrollTo="body" mod="sk-hits-list" />
+            <Hits hitsPerPage={20} highlightFields={["name","description","instructor"]} listComponent={CourseListTable} />
             <NoHits suggestionsField={"name"}/>
             <Pagination showNumbers={true}/>
           </LayoutResults>
