@@ -16,9 +16,8 @@ const searchkit = new SearchkitManager(host, {
   searchUrlPath: "/" + indexName + "/_search"
 })
 
-const CourseListTable = (props)=> {
+const CourseListTable = (props) => {
   const { hits } = props
-  const raw = JSON.stringify(hits)
   return (
     <div style={{width: '100%', boxSizing: 'border-box', padding: 8}}>
        <table className="sk-table sk-table-striped" style={{width: '100%', boxSizing: 'border-box'}}>
@@ -34,7 +33,7 @@ const CourseListTable = (props)=> {
          </thead>
          <tbody>
            {map(hits, hit => (
-             <tr key={hit._id}>
+             <tr key={hit._id} className="sk-hits-row">
                <td>{hit._source.campus}</td>
                <td>{hit._source.semester}</td>
                <td>{hit._source.courseNumber}</td>
