@@ -16,46 +16,39 @@ const searchkit = new SearchkitManager(host, {
   searchUrlPath: "/" + indexName + "/_search"
 })
 
-class CourseListTable extends Component {
-  render(){
-    //const {bemBlocks, result} = props
-    //const source:any = extend({}, result._source, result.highlight)
-    //let raw = JSON.stringify(result) + "\n\n----\n" + JSON.stringify(source) + "\n\n----\n" + JSON.stringify(props);
-    //const hits  = props
-    //var raw = JSON.stringify(this.props);
-    /*return (
-      {raw}
-    )*/
-    //const { props } = this
-    const { hits } = this.props
-    return (
-      <div style={{width: '100%', boxSizing: 'border-box', padding: 8}}>
-         <table className="sk-table sk-table-striped" style={{width: '100%', boxSizing: 'border-box'}}>
-           <thead>
-             <tr>
-               <th></th>
-               <th>Title</th>
-               <th>Year</th>
-               <th>Rating</th>
+const CourseListTable = (props)=> {
+  const { hits } = props
+  const raw = JSON.stringify(hits)
+  return (
+    <div style={{width: '100%', boxSizing: 'border-box', padding: 8}}>
+       <table className="sk-table sk-table-striped" style={{width: '100%', boxSizing: 'border-box'}}>
+         <thead>
+           <tr>
+             <th>Campus</th>
+             <th>Semester</th>
+             <th>Number</th>
+             <th>Name</th>
+             <th>Instructor</th>
+             <th>Schedule</th>
+           </tr>
+         </thead>
+         <tbody>
+           {map(hits, hit => (
+             <tr key={hit._id}>
+               <td>{hit._source.campus}</td>
+               <td>{hit._source.semester}</td>
+               <td>{hit._source.courseNumber}</td>
+               <td dangerouslySetInnerHTML={{__html: (hit.highlight.name||hit._source.name)}}></td>
+               <td dangerouslySetInnerHTML={{__html: (hit.highlight.instructor||hit._source.instructor)}}></td>
+               <td>{hit._source.day}{hit._source.time}</td>
              </tr>
-           </thead>
-           <tbody>
-             {map(hits, hit => (
-               <tr key={hit._id}>
-                 <td>{hit._source.campus}</td>
-                 <td>{hit._source.semester}</td>
-                 <td>{hit._source.courseNumber}</td>
-                 <td dangerouslySetInnerHTML={{__html: hit._source.name}}></td>
-                 <td dangerouslySetInnerHTML={{__html: hit._source.instructor}}></td>
-                 <td>{hit._source.day}{hit._source.time}</td>
-               </tr>
-             ))}
-           </tbody>
-         </table>
-       </div>
-    )
-  }
+           ))}
+         </tbody>
+       </table>
+     </div>
+  )
 }
+
 
 class App extends Component {
   render() {
