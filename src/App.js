@@ -32,19 +32,24 @@ const CourseListTable = (props) => {
            </tr>
          </thead>
          <tbody>
-           {map(hits, hit => (
-             <tr key={hit._id} className="sk-hits-row">
-               <td>{hit._source.campus}</td>
-               <td>{hit._source.semester}</td>
-               <td>{hit._source.courseNumber}</td>
-               <td dangerouslySetInnerHTML={{__html: (hit.highlight.name||hit._source.name)}}></td>
-               <td dangerouslySetInnerHTML={{__html: (hit.highlight.instructor||hit._source.instructor)}}></td>
-               <td>{hit._source.day}{hit._source.time}</td>
-             </tr>
-           ))}
+           {map(hits, CourseListTableRow)}
          </tbody>
        </table>
      </div>
+  )
+}
+
+const CourseListTableRow = (result) => {
+  const source:any = extend({}, result._source, result.highlight)
+  return (
+    <tr key={result._id} className="sk-hits-row">
+      <td>{source.campus}</td>
+      <td>{source.semester}</td>
+      <td>{source.courseNumber}</td>
+      <td dangerouslySetInnerHTML={{__html: source.name}}></td>
+      <td dangerouslySetInnerHTML={{__html: source.instructor}}></td>
+      <td>{source.day.join(', ')} {source.time.join(', ')}</td>
+    </tr>
   )
 }
 
@@ -63,9 +68,9 @@ class App extends Component {
           <SideBar>
             <RefinementListFilter id="campus" title="Campus" field="campus.keyword" size={10}  operator="OR"/>
             <RefinementListFilter id="semester" title="Semester" field="semester.keyword" size={10}  operator="OR"/>
-            <RefinementListFilter listComponent={Select} id="department" title="Department" field="program.keyword" orderKey="_term" operator="OR"/>
+            <RefinementListFilter listComponent={Select} id="department" title="Department" field="program.keyword" orderKey="_term" operator="OR" size={1000}/>
             <InputFilter id="instructors" searchThrottleTime={500} title="Instructors" placeholder="Search instructors" searchOnChange={true} queryFields={["instructor"]} />
-            <RefinementListFilter id="days" title="Days" field="day.keyword" size={10} operator="OR"/>
+            <RefinementListFilter id="days" title="Days" field="day.keyword" size={50} operator="OR"/>
           </SideBar>
           <LayoutResults>
             <ActionBar>
