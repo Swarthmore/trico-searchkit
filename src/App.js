@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+var a11y = require('react-a11y');
+a11y(React);
 import { extend, map } from 'lodash'
 import { SearchkitManager,SearchkitProvider,
   SearchBox, RefinementListFilter, Pagination,
@@ -53,6 +55,32 @@ const CourseListTableRow = (result) => {
   )
 }
 
+class SwatSearchBox extends SearchBox {
+  render() {
+    let block = this.bemBlocks.container
+
+    return (
+      <div className={block().state({focused:this.state.focused})}>
+        <form onSubmit={this.onSubmit.bind(this)}>
+          <div className={block("icon")}></div>
+          <input type="text"
+          data-qa="query"
+          className={block("text")}
+          placeholder={this.props.placeholder || this.translate("searchbox.placeholder")}
+          value={this.getValue()}
+          onFocus={this.setFocusState.bind(this, true)}
+          onBlur={this.setFocusState.bind(this, false)}
+          ref="queryField"
+          autoFocus={this.props.autofocus}
+          onInput={this.onChange.bind(this)}/>
+          <input type="submit" value="search" className={block("action")} data-qa="submit"/>
+          <div data-qa="loader" className={block("loader").mix("sk-spinning-loader").state({hidden:!this.isLoading()})}></div>
+        </form>
+      </div>
+    );
+
+  }
+}
 
 class App extends Component {
   render() {
@@ -60,7 +88,7 @@ class App extends Component {
       <SearchkitProvider searchkit={searchkit}>
         <Layout>
           <TopBar>
-            <SearchBox autofocus={true} searchOnChange={true} prefixQueryOptions={{analyzer:"standard"}} prefixQueryFields={["name^9","description^5","instructor^4","program"]}/>
+            <SwatSearchBox autofocus={true} searchOnChange={true} prefixQueryOptions={{analyzer:"standard"}} prefixQueryFields={["name^9","description^5","instructor^4","program"]} itemProps={{'aria-label':"DERP"}}/>
           </TopBar>
 
         <LayoutBody>
