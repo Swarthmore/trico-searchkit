@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-var a11y = require('react-a11y');
-a11y(React);
+//var a11y = require('react-a11y');
+//a11y(React);
 import { extend, map } from 'lodash'
 import { SearchkitManager,SearchkitProvider,
   SearchBox, RefinementListFilter, Pagination,
@@ -9,14 +9,18 @@ import { SearchkitManager,SearchkitProvider,
   Hits, DynamicRangeFilter,
   InputFilter, GroupedSelectedFilters,
   Layout, TopBar, LayoutBody, LayoutResults,
-  ActionBar, ActionBarRow, SideBar, Select } from 'searchkit'
+  ActionBar, ActionBarRow, SideBar, Select} from 'searchkit'
 import './index.css'
+
+//our overridden components
+import { TCGSearchBox, TCGDeptSelect, TCGCheckboxItemComponent } from './TCGComps'
 
 const host = "https://search-course-data-mspkldvllazhgahqqsihmvdzka.us-east-1.es.amazonaws.com"
 const indexName = "courses";
 const searchkit = new SearchkitManager(host, {
   searchUrlPath: "/" + indexName + "/_search"
 })
+
 
 const CourseListTable = (props) => {
   const { hits } = props
@@ -55,48 +59,21 @@ const CourseListTableRow = (result) => {
   )
 }
 
-class SwatSearchBox extends SearchBox {
-  render() {
-    let block = this.bemBlocks.container
-
-    return (
-      <div className={block().state({focused:this.state.focused})}>
-        <form onSubmit={this.onSubmit.bind(this)}>
-          <div className={block("icon")}></div>
-          <input type="text"
-          data-qa="query"
-          className={block("text")}
-          placeholder={this.props.placeholder || this.translate("searchbox.placeholder")}
-          value={this.getValue()}
-          onFocus={this.setFocusState.bind(this, true)}
-          onBlur={this.setFocusState.bind(this, false)}
-          ref="queryField"
-          autoFocus={this.props.autofocus}
-          onInput={this.onChange.bind(this)}/>
-          <input type="submit" value="search" className={block("action")} data-qa="submit"/>
-          <div data-qa="loader" className={block("loader").mix("sk-spinning-loader").state({hidden:!this.isLoading()})}></div>
-        </form>
-      </div>
-    );
-
-  }
-}
-
 class App extends Component {
   render() {
     return (
       <SearchkitProvider searchkit={searchkit}>
         <Layout>
           <TopBar>
-            <SwatSearchBox autofocus={true} searchOnChange={true} prefixQueryOptions={{analyzer:"standard"}} prefixQueryFields={["name^9","description^5","instructor^4","program"]} itemProps={{'aria-label':"DERP"}}/>
+            <TCGSearchBox autofocus={true} searchOnChange={true} prefixQueryOptions={{analyzer:"standard"}} prefixQueryFields={["name^9","description^5","instructor^4","program"]}/>
           </TopBar>
 
         <LayoutBody>
 
           <SideBar>
-            <RefinementListFilter id="campus" title="Campus" field="campus.keyword" size={10}  operator="OR"/>
+            <RefinementListFilter id="campus" title="Campus" field="campus.keyword" size={10}  operator="OR" itemComponent={TCGCheckboxItemComponent} />
             <RefinementListFilter id="semester" title="Semester" field="semester.keyword" size={10}  operator="OR"/>
-            <RefinementListFilter listComponent={Select} id="department" title="Department" field="program.keyword" orderKey="_term" operator="OR" size={1000}/>
+            <RefinementListFilter listComponent={TCGDeptSelect} id="department" title="Department" field="program.keyword" orderKey="_term" operator="OR" size={1000}/>
             <InputFilter id="instructors" searchThrottleTime={500} title="Instructors" placeholder="Search instructors" searchOnChange={true} queryFields={["instructor"]} />
             <RefinementListFilter id="days" title="Days" field="day.keyword" size={50} operator="OR"/>
           </SideBar>
