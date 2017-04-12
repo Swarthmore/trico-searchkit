@@ -25,9 +25,9 @@ function TCGitemRenderer(props: ItemComponentProps) {
 
   const hasCount = showCount && (count != undefined) && (count != null)
   return (
-    <label role="composite" aria-activedescendant={elmId} htmlFor={elmId} onMouseDown={onClick} onClick={onClick}>
+    <label htmlFor={elmId}>
       <div className={className} style={style} data-qa="option" data-key={itemKey}>
-        {showCheckbox ? <input type="checkbox" aria-label={label} id={elmId} data-qa="checkbox" checked={active} className={block("checkbox").state({ active }) } ></input> : undefined}
+        <input type="checkbox" aria-label={label} id={elmId} onChange={onClick} data-qa="checkbox" checked={active} className={block("checkbox").state({ active }) } ></input>
         <div data-qa="label" className={block("text") }>{label}</div>
         {hasCount ? < div data-qa="count" className={block("count") }>{count}</div> : undefined}
       </div>
@@ -68,6 +68,12 @@ export class TCGSearchBox extends SearchBox {
 }
 
 export class TCGDeptSelect extends Select {
+  onChange(e){
+    const { setItems } = this.props
+    const key = e.target.value
+    const itemArr = (key.length) ? [key] : []
+    setItems(itemArr)
+  }
 
   render() {
     const { mod, className, items,
@@ -76,10 +82,12 @@ export class TCGDeptSelect extends Select {
     const bemBlocks = {
       container: block(mod)
     }
+
     let selVal = (this.getSelectedValue()||"")
     return (
       <div className={bemBlocks.container().mix(className).state({ disabled }) }>
         <select aria-label="Department" onChange={this.onChange} value={selVal}>
+          <option value="">Select a Department</option>
           {map(items, ({key, label, title, disabled, doc_count}, idx) => {
             var text = translate(label || title || key)
             if (showCount && doc_count !== undefined) text += ` (${countFormatter(doc_count)})`

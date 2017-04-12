@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-var a11y = require('react-a11y');
-a11y(React);
+//var a11y = require('react-a11y');
+//a11y(React);
 import { extend, map } from 'lodash'
 import { SearchkitManager,SearchkitProvider,
   SearchBox, RefinementListFilter, Pagination,
