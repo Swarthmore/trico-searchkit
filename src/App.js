@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-//var a11y = require('react-a11y');
-//a11y(React);
+var a11y = require('react-a11y');
+a11y(React);
 import { extend, map } from 'lodash'
 import { SearchkitManager,SearchkitProvider,
   SearchBox, RefinementListFilter, Pagination,
@@ -72,10 +72,9 @@ class App extends Component {
 
           <SideBar>
             <RefinementListFilter id="campus" title="Campus" field="campus.keyword" size={10}  operator="OR" itemComponent={TCGCheckboxItemComponent} />
-            <RefinementListFilter id="semester" title="Semester" field="semester.keyword" size={10}  operator="OR"/>
+            <RefinementListFilter id="semester" title="Semester" field="semester.keyword" size={10}  operator="OR" itemComponent={TCGCheckboxItemComponent}/>
             <RefinementListFilter listComponent={TCGDeptSelect} id="department" title="Department" field="program.keyword" orderKey="_term" operator="OR" size={1000}/>
-            <InputFilter id="instructors" searchThrottleTime={500} title="Instructors" placeholder="Search instructors" searchOnChange={true} queryFields={["instructor"]} />
-            <RefinementListFilter id="days" title="Days" field="day.keyword" size={50} operator="OR"/>
+            <RefinementListFilter id="days" title="Days" field="day.keyword" size={50} operator="OR" itemComponent={TCGCheckboxItemComponent}/>
           </SideBar>
           <LayoutResults>
             <ActionBar>
