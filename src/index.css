@@ -3,3 +3,19 @@
 .sk-hits-row em {
     background: #ff0;
 }
+
+.sk-filter-group__remove-action {
+  text-decoration: none;
+}
+
+.sk-filter-group-items__list a{
+  text-decoration: none;
+}
+
+.sk-filter-group-items__list a::after{
+  content: ',';
+}
+
+.sk-filter-group-items__list a:last-child::after{
+  content: '';
+}

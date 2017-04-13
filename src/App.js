@@ -37,7 +37,7 @@ const CourseListTable = (props) => {
              <th>Schedule</th>
            </tr>
          </thead>
-         <tbody>
+         <tbody aria-relevant="all">
            {map(hits, CourseListTableRow)}
          </tbody>
        </table>

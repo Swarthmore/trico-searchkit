@@ -25,6 +25,14 @@ export class TCGFilterGroup extends FilterGroup {
     )
   }
 
+  renderRemove(bemBlocks, filters) {
+    if (!this.props.removeFilters) return null
+    const linkTitle = "Remove " + filters[0].name + " filter"
+    return (
+        <a href="#" title={linkTitle} className={bemBlocks.container("remove-action") } onClick={this.removeFilters}>X</a>
+    )
+  }
+
   render() {
     const { mod, className, title, filters, removeFilters, removeFilter } = this.props
 
@@ -41,11 +49,10 @@ export class TCGFilterGroup extends FilterGroup {
             {map(filters, filter => this.renderFilter(filter, bemBlocks))}
           </div>
         </div>
+        {this.renderRemove(bemBlocks, filters)}
       </div>
     )
   }
-  // TODO: X needs to be added in CSS, it is purely decorative
-  //{this.renderRemove(bemBlocks)}
 }
 
 export class TCGResetFiltersDisplay extends ResetFiltersDisplay{
@@ -65,9 +72,9 @@ export class TCGFilterGroupItem extends FilterGroupItem {
     const { bemBlocks, label, itemKey, filter } = this.props
     const linkTitle = "Remove " + label + " " + filter.name + " filter"
     return (
-      <a role="button" href="#" title={linkTitle} onClick={this.removeFilter}>
-          <div className={bemBlocks.items("value") } data-key={itemKey}>{label}</div>
-      </a>
+        <a href="#" title={linkTitle} onClick={this.removeFilter}>
+            <div className={bemBlocks.items("value") } data-key={itemKey}>{label}</div>
+        </a>
     )
   }
 }
@@ -110,6 +117,7 @@ export class TCGSearchBox extends SearchBox {
         <form onSubmit={this.onSubmit.bind(this)}>
           <div className={block("icon")}></div>
           <input type="text"
+          role="search"
           aria-label={this.props.placeholder || this.translate("searchbox.placeholder")}
           data-qa="query"
           className={block("text")}
