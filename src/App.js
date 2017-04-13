@@ -13,7 +13,7 @@ import { SearchkitManager,SearchkitProvider,
 import './index.css'
 
 //our overridden components
-import { TCGSearchBox, TCGDeptSelect, TCGCheckboxItemComponent } from './TCGComps'
+import { TCGSearchBox, TCGDeptSelect, TCGCheckboxItemComponent, TCGFilterGroup, TCGResetFiltersDisplay } from './TCGComps'
 
 const host = "https://search-course-data-mspkldvllazhgahqqsihmvdzka.us-east-1.es.amazonaws.com"
 const indexName = "courses";
@@ -86,8 +86,8 @@ class App extends Component {
               </ActionBarRow>
 
               <ActionBarRow>
-                <GroupedSelectedFilters/>
-                <ResetFilters/>
+                <GroupedSelectedFilters groupComponent={TCGFilterGroup}/>
+                <ResetFilters component={TCGResetFiltersDisplay} />
               </ActionBarRow>
 
             </ActionBar>

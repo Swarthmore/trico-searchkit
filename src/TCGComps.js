@@ -5,11 +5,72 @@ import { SearchkitManager,SearchkitProvider,
   HierarchicalMenuFilter, HitsStats, SortingSelector, NoHits,
   ResetFilters, RangeFilter, NumericRefinementListFilter,
   Hits, DynamicRangeFilter,
-  InputFilter, GroupedSelectedFilters,
+  InputFilter, GroupedSelectedFilters, FilterGroup, FilterGroupItem, ResetFiltersDisplay,
   Layout, TopBar, LayoutBody, LayoutResults,
   ActionBar, ActionBarRow, SideBar, Select, CheckboxItemComponent } from 'searchkit'
 let block = require("bem-cn")
 
+
+export class TCGFilterGroup extends FilterGroup {
+  renderFilter(filter, bemBlocks) {
+    const { translate, removeFilter } = this.props
+
+    return (
+      <TCGFilterGroupItem key={filter.value}
+                  itemKey={filter.value}
+                  bemBlocks={bemBlocks}
+                  filter={filter}
+                  label={translate(filter.value)}
+                  removeFilter={removeFilter} />
+    )
+  }
+
+  render() {
+    const { mod, className, title, filters, removeFilters, removeFilter } = this.props
+
+    const bemBlocks = {
+        container: block(mod),
+        items: block (`${mod}-items`)
+    }
+
+    return (
+      <div key={title} className={bemBlocks.container().mix(className)}>
+        <div className={bemBlocks.items()}>
+          <div className={bemBlocks.items("title")}>{title}</div>
+          <div className={bemBlocks.items("list")}>
+            {map(filters, filter => this.renderFilter(filter, bemBlocks))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+  // TODO: X needs to be added in CSS, it is purely decorative
+  //{this.renderRemove(bemBlocks)}
+}
+
+export class TCGResetFiltersDisplay extends ResetFiltersDisplay{
+	render(){
+		const {bemBlock, hasFilters, translate, resetFilters, clearAllLabel} = this.props
+    const linkClass = bemBlock().state({disabled:!hasFilters}) + " " + bemBlock("reset")
+		return (
+					<div className="filter-reset">
+						<a href="#" onClick={resetFilters} className={linkClass}>{clearAllLabel}</a>
+					</div>
+		)
+	}
+}
+
+export class TCGFilterGroupItem extends FilterGroupItem {
+  render(){
+    const { bemBlocks, label, itemKey, filter } = this.props
+    const linkTitle = "Remove " + label + " " + filter.name + " filter"
+    return (
+      <a role="button" href="#" title={linkTitle} onClick={this.removeFilter}>
+          <div className={bemBlocks.items("value") } data-key={itemKey}>{label}</div>
+      </a>
+    )
+  }
+}
 /**
  * itemRender function that does not use the FastClick element
  */
@@ -23,7 +84,7 @@ function TCGitemRenderer(props: ItemComponentProps) {
     .mix(bemBlocks.container("item"))
   const elmId = bemBlocks.container("text") + "_" + label.toLowerCase().replace(/\s+/g, "_")
 
-  const hasCount = showCount && (count != undefined) && (count != null)
+  const hasCount = showCount && (count !== undefined) && (count != null)
   return (
     <label htmlFor={elmId}>
       <div className={className} style={style} data-qa="option" data-key={itemKey}>
@@ -63,7 +124,7 @@ export class TCGSearchBox extends SearchBox {
           <div data-qa="loader" className={block("loader").mix("sk-spinning-loader").state({hidden:!this.isLoading()})}></div>
         </form>
       </div>
-    );
+    )
   }
 }
 
