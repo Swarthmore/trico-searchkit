@@ -12,6 +12,18 @@ let block = require("bem-cn")
 
 
 export class TCGFilterGroup extends FilterGroup {
+  constructor(props) {
+    super(props)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+  }
+
+  handleKeyPress(event){
+    if(event.key == ' ' || event.key == 'enter'){
+      event._targetInst._currentElement.props.onClick()
+      event.preventDefault()
+    }
+  }
+
   renderFilter(filter, bemBlocks) {
     const { translate, removeFilter } = this.props
 
@@ -29,7 +41,7 @@ export class TCGFilterGroup extends FilterGroup {
     if (!this.props.removeFilters) return null
     const linkTitle = "Remove " + filters[0].name + " filter"
     return (
-        <a href="#" title={linkTitle} className={bemBlocks.container("remove-action") } onClick={this.removeFilters}>X</a>
+        <a href="#" role="button" title={linkTitle} className={bemBlocks.container("remove-action") } onKeyDown={this.handleKeyPress} onClick={this.removeFilters}>X</a>
     )
   }
 
@@ -56,23 +68,47 @@ export class TCGFilterGroup extends FilterGroup {
 }
 
 export class TCGResetFiltersDisplay extends ResetFiltersDisplay{
+  constructor(props) {
+    super(props)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+  }
+
+  handleKeyPress(event){
+    if(event.key == ' ' || event.key == 'enter'){
+      event._targetInst._currentElement.props.onClick()
+      event.preventDefault()
+    }
+  }
+
 	render(){
 		const {bemBlock, hasFilters, translate, resetFilters, clearAllLabel} = this.props
     const linkClass = bemBlock().state({disabled:!hasFilters}) + " " + bemBlock("reset")
 		return (
 					<div className="filter-reset">
-						<a href="#" onClick={resetFilters} className={linkClass}>{clearAllLabel}</a>
+						<a href="#" role="button" onClick={resetFilters} onKeyDown={this.handleKeyPress} className={linkClass}>{clearAllLabel}</a>
 					</div>
 		)
 	}
 }
 
 export class TCGFilterGroupItem extends FilterGroupItem {
+  constructor(props) {
+    super(props)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+  }
+
+  handleKeyPress(event){
+    if(event.key == ' ' || event.key == 'enter'){
+      event._targetInst._currentElement.props.onClick()
+      event.preventDefault()
+    }
+  }
+
   render(){
     const { bemBlocks, label, itemKey, filter } = this.props
     const linkTitle = "Remove " + label + " " + filter.name + " filter"
     return (
-        <a href="#" title={linkTitle} onClick={this.removeFilter}>
+        <a href="#" role="button" title={linkTitle} onKeyDown={this.handleKeyPress} onClick={this.removeFilter}>
             <div className={bemBlocks.items("value") } data-key={itemKey}>{label}</div>
         </a>
     )
@@ -169,6 +205,18 @@ export class TCGDeptSelect extends Select {
 }
 
 class TCGPageItemComponent extends React.Component{
+  constructor(props) {
+    super(props)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
+  }
+
+  handleKeyPress(event){
+    if(event.key == ' ' || event.key == 'enter'){
+      event._targetInst._currentElement.props.onClick()
+      event.preventDefault()
+    }
+  }
+
   render () {
     const {
     bemBlocks, onClick, active, disabled, style, itemKey,
@@ -180,7 +228,7 @@ class TCGPageItemComponent extends React.Component{
     const titleAttr = (label.match(/^[0-9]+$/)) ? "page " + label : "go to " + label.toLowerCase() + " page"
     if (!disabled){
       return (
-        <a href="#" title={titleAttr} onClick={onClick} className={className} style={style} data-qa="option" data-key={itemKey}>
+        <a href="#" role="button" title={titleAttr} onKeyDown={this.handleKeyPress} onClick={onClick} className={className} style={style} data-qa="option" data-key={itemKey}>
           <div data-qa="label" className={block("text") }>{label}</div>
         </a>
       )

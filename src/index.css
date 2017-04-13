@@ -19,3 +19,7 @@
 .sk-filter-group-items__list a:last-child::after{
   content: '';
 }
+
+.filter-reset .is-disabled {
+  display: none;
+}
