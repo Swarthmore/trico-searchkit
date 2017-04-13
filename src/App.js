@@ -13,7 +13,7 @@ import { SearchkitManager,SearchkitProvider,
 import './index.css'
 
 //our overridden components
-import { TCGSearchBox, TCGDeptSelect, TCGCheckboxItemComponent, TCGFilterGroup, TCGResetFiltersDisplay } from './TCGComps'
+import { TCGSearchBox, TCGDeptSelect, TCGCheckboxItemComponent, TCGFilterGroup, TCGResetFiltersDisplay, TCGPageToggle } from './TCGComps'
 
 const host = "https://search-course-data-mspkldvllazhgahqqsihmvdzka.us-east-1.es.amazonaws.com"
 const indexName = "courses";
@@ -93,7 +93,7 @@ class App extends Component {
             </ActionBar>
             <Hits hitsPerPage={20} highlightFields={["name","description","instructor"]} listComponent={CourseListTable} />
             <NoHits suggestionsField={"name"}/>
-            <Pagination showNumbers={true}/>
+            <Pagination showNumbers={true} listComponent={TCGPageToggle} />
           </LayoutResults>
 
           </LayoutBody>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { extend, map, keys } from 'lodash'
+import { extend, map, keys, defaults } from 'lodash'
 import { SearchkitManager,SearchkitProvider,
   SearchBox, RefinementListFilter, Pagination,
   HierarchicalMenuFilter, HitsStats, SortingSelector, NoHits,
@@ -7,7 +7,7 @@ import { SearchkitManager,SearchkitProvider,
   Hits, DynamicRangeFilter,
   InputFilter, GroupedSelectedFilters, FilterGroup, FilterGroupItem, ResetFiltersDisplay,
   Layout, TopBar, LayoutBody, LayoutResults,
-  ActionBar, ActionBarRow, SideBar, Select, CheckboxItemComponent } from 'searchkit'
+  ActionBar, ActionBarRow, SideBar, Select, CheckboxItemComponent, Toggle, ItemComponent, AbstractItemList } from 'searchkit'
 let block = require("bem-cn")
 
 
@@ -166,4 +166,38 @@ export class TCGDeptSelect extends Select {
       </div>
     )
   }
+}
+
+class TCGPageItemComponent extends React.Component{
+  render () {
+    const {
+    bemBlocks, onClick, active, disabled, style, itemKey,
+    label} = this.props
+    const block = bemBlocks.option
+    const className = block()
+      .state({ active, disabled })
+      .mix(bemBlocks.container("item"))
+    const titleAttr = (label.match(/^[0-9]+$/)) ? "page " + label : "go to " + label.toLowerCase() + " page"
+    if (!disabled){
+      return (
+        <a href="#" title={titleAttr} onClick={onClick} className={className} style={style} data-qa="option" data-key={itemKey}>
+          <div data-qa="label" className={block("text") }>{label}</div>
+        </a>
+      )
+    } else {
+      return (
+        <div className={className} style={style} data-qa="option" data-key={itemKey}>
+          <div data-qa="label" className={block("text") }>{label}</div>
+        </div>
+      )
+    }
+  }
+}
+
+export class TCGPageToggle extends AbstractItemList{
+    static defaultProps = defaults({
+        itemComponent: TCGPageItemComponent,
+        mod: 'sk-toggle',
+        showCount: false
+    }, AbstractItemList.defaultProps)
 }
